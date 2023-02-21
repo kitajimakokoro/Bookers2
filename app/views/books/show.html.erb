@@ -1,22 +1,53 @@
-<!-- ユーザーの詳細 -->
-<%= render 'info', user: @user %>
-
-<!-- 新規投稿画面 -->
-<%= render 'newform', book: @book %>
-
-<div>
-  <h2>Book detail</h2>
-  <%= link_to book_path(@book.id) do %>
-  <p>Title：<%= @book.title %></p>
-  <% end %>
-  <p>Opinion：<%= @book.body %></p>
-  <p>投稿ユーザー画像：<%= image_tag @book.user.get_profile_image(100,100) %></p>
-  <%= link_to user_path(@user) do %>
-  <p>ユーザーネーム：<%= @book.user.name %></p>
+<div class="container px-5 px-sm-0">
+  <% if @book_new.errors.any? %>
+  <h3><%= @book_new.errors.count %>errors prohibited this obj from being saved:</h3>
+    <ul>
+      <% @book_new.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+      <% end %>
+    </ul>
   <% end %>
 
-  <% if @book.user == current_user %>
-    <%= link_to "Edit", edit_book_path(@book) %>
-    <%= link_to "Destroy", book_path(@book), method: :delete %>
-  <% end %>
+  <div class="row">
+    <div class="col-md-3">
+      <!-- ユーザーの詳細 -->
+      <%= render 'info', user: @user %>
+      <!-- 新規投稿画面 -->
+      <%= render 'newform', book: @book_new %>
+    </div>
+    <div class="col-md-8 offset-md-1">
+      <h2>Book detail</h2>
+      <table class="table">
+        <tbody>
+        <%= link_to book_path(@book.id) do %>
+          <tr>
+            <td>
+              <%= image_tag @book.user.get_profile_image(100,100) %>
+              <br>
+              <%= link_to user_path(@user) do %>
+              <%= @book.user.name %>
+              <% end %>
+            </td>
+            <td>
+              <%= link_to book_path(@book) do %>
+              <%= @book.title %>
+              <% end %>
+            </td>
+            <td>
+              <%= @book.body %>
+            </td>
+            <% if @book.user == current_user %>
+            <td>
+              <%= link_to "Edit", edit_book_path(@book), class: "btn btn-sm btn-success" %>
+            </td>
+            <td>
+              <%= link_to "Destroy", book_path(@book), method: :delete, "data-confirm" => "本当に消しますか？", class: "btn btn-sm btn-danger" %>
+            </td>
+            <% end %>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
